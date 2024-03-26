@@ -22,4 +22,28 @@ describe("POST /", function () {
       .send();
     expect(resp.statusCode).toEqual(400);
   });
+
+  test("throws error if invalid inputs", async function () {
+    const resp = await request(app)
+      .post("/shipments")
+      .send({
+        productId: 1000,
+        name: true,
+        addr: "100 Test St",
+        zip: 42098,
+      });
+
+    expect(resp.statusCode).toEqual(400);
+    expect(resp.body).toEqual({
+      "error": {
+        "message": [
+          "instance.name is not of a type(s) string",
+          "instance.zip is not of a type(s) string"
+        ],
+        "status": 400
+      }
+
+    });
+  });
+
 });
